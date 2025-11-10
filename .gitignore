@@ -1,0 +1,28 @@
+# Environment files (contains secrets)
+.env
+.env.local
+.env.*.local
+
+# Docker volumes and data
+sonarqube/
+postgresql/
+postgres/
+
+# Docker compose override (local development)
+docker-compose.override.yml
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# OS files
+Thumbs.db
+.DS_Store

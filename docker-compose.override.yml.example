@@ -1,0 +1,45 @@
+# docker-compose.override.yml.example
+# 
+# This file shows how to customize the setup for local development.
+# Copy this to docker-compose.override.yml to use (it's in .gitignore).
+#
+# This file will automatically be merged with docker-compose.yml when running:
+# docker-compose up
+#
+# See: https://docs.docker.com/compose/extends/
+
+version: '3.9'
+
+services:
+  sonarqube:
+    # Reduce resource limits for local development
+    mem_limit: 1.5g
+    memswap_limit: 1.5g
+    cpus: '1'
+    
+    # Add more verbose logging
+    environment:
+      SONAR_LOG_LEVEL: DEBUG
+    
+    # Example: Mount local source code for analysis
+    # volumes:
+    #   - /path/to/your/project:/mnt/myproject
+    
+    # Faster startup on local machine (less memory for elasticsearch)
+    # environment:
+    #   SONAR_ES_JAVAADDITIONALOPTS: -Xms128m -Xmx256m
+
+  postgres:
+    # Reduce resource limits for local development
+    mem_limit: 512m
+    memswap_limit: 512m
+    cpus: '0.5'
+
+# Example: Add a development volume for code analysis
+# volumes:
+#   source-code:
+#     driver: local
+#     driver_opts:
+#       type: none
+#       o: bind
+#       device: /path/to/your/code

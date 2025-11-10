@@ -1,0 +1,80 @@
+version: '3.9'
+
+# SonarQube Code Quality Analysis Stack
+# This compose file sets up SonarQube with PostgreSQL database
+# See README.md for setup and usage instructions
+
+services:
+  # SonarQube Community Edition - Code quality and security scanning
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    restart: on-failure:3
+    environment:
+      # Database Configuration
+      SONAR_JDBC_URL: jdbc:postgresql://postgres:5432/${DB_NAME}
+      SONAR_JDBC_USERNAME: ${DB_USER}
+      SONAR_JDBC_PASSWORD: ${DB_PASSWORD}
+      # JVM Memory Configuration (adjust based on your hardware)
+      SONAR_WEB_JAVAADDITIONALOPTS: -Xms512m -Xmx1g
+      SONAR_CE_JAVAADDITIONALOPTS: -Xms512m -Xmx512m
+      SONAR_ES_JAVAADDITIONALOPTS: -Xms256m -Xmx512m
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: 'true'
+    ports:
+      - '${SONAR_PORT}:9000'
+    volumes:
+      - sonarqube-data:/opt/sonarqube/data
+      - sonarqube-extensions:/opt/sonarqube/extensions
+      - sonarqube-logs:/opt/sonarqube/logs
+    mem_limit: 3g
+    memswap_limit: 3g
+    cpus: '2'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/api/system/health", "-o", "/dev/null", "-s"]
+      interval: 30s
+      timeout: 15s
+      retries: 5
+      start_period: 120s
+    networks:
+      - sonarqube-network
+
+  # PostgreSQL Database for SonarQube
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: on-failure:3
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_INITDB_ARGS: -c max_connections=200 -c shared_buffers=256MB
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    mem_limit: 1g
+    memswap_limit: 1g
+    cpus: '1'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - sonarqube-network
+
+volumes:
+  sonarqube-data:
+    driver: local
+  sonarqube-extensions:
+    driver: local
+  sonarqube-logs:
+    driver: local
+  postgres-data:
+    driver: local
+
+networks:
+  sonarqube-network:
+    driver: bridge
+    name: sonarqube-network
