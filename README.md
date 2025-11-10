@@ -364,5 +364,3 @@ docker-compose exec postgres psql -U sonar -d sonar \
 ```
 
 ---
-
-**Last Updated:** 2024
