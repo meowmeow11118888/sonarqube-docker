@@ -1,6 +1,6 @@
 # SonarQube Docker Compose Setup
 
-A production-ready Docker Compose configuration for running SonarQube Community Edition with PostgreSQL database.
+A production-ready Docker Compose configuration for running SonarQube Community Edition with PostgreSQL database. This comprehensive, production-ready SonarQube setup provides enterprise-grade documentation, health checks, and resource optimization that transforms a basic Docker deployment into a deployment-ready solution for teams of any size.﻿
 
 ## Overview
 
