@@ -23,7 +23,7 @@ This setup provides:
 ### 1. Clone or Download
 
 ```bash
-git clone https://github.com/meowmeow11118888/sonarqube-docker.git
+git clone <repo url>
 cd sonarqube-docker
 ```
 
